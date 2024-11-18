@@ -8,5 +8,6 @@ router.post('/t', prepController.TextToLowerCase);
 router.post('/z', prepController.AnalyzeWord);
 router.post('/s', prepController.StopWords);
 router.post('/u', prepController.FindUniques);
+router.post('/auto', prepController.FullAuto);
 
 module.exports = router;

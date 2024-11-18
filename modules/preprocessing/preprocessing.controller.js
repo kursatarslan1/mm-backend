@@ -2,7 +2,7 @@ const Prep = require("./preprocessing.service");
 
 async function RemovePunctuations(req, res) {
     try {
-        const resultText = await Prep.RemovePunctuations(req.body);
+        const resultText = await Prep.RemovePunctuations(req.body.text);
         if (!resultText) {
             res.status(400).json({ message: "Cannot remove punctuations" });
         }
@@ -14,7 +14,7 @@ async function RemovePunctuations(req, res) {
 
 async function RemoveNumbers(req, res) {
     try {
-        const resultText = await Prep.RemoveNumbers(req.body);
+        const resultText = await Prep.RemoveNumbers(req.body.text);
         if (!resultText) {
             res.status(400).json({ message: "Cannot remove numbers" });
         }
@@ -26,7 +26,7 @@ async function RemoveNumbers(req, res) {
 
 async function TextToLowerCase(req, res) {
     try {
-        const resultText = await Prep.LowerCase(req.body);
+        const resultText = await Prep.LowerCase(req.body.text);
         if (!resultText) {
             res.status(400).json({ message: "Cannot change to lowercase" });
         }
@@ -45,7 +45,7 @@ async function AnalyzeWord(req, res) {
         return res.status(400).json({ message: 'Error analyzing word' });
       }
   
-      res.status(200).json(analysisResult);
+      res.status(200).json({ result: analysisResult });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Server Error' });
@@ -77,11 +77,25 @@ async function FindUniques(req, res){
     }
 }
 
+async function FullAuto(req, res){
+    try{
+        const result = await Prep.FullAuto(req.body.text);
+        if(!result){
+            return res.status(400).json({ error: "server error" });
+        }
+        return res.status(200).json({ result });
+    } catch (error){
+        return res.status(500).json({ error: "Server Error" });
+    }
+}
+
+
 module.exports = { 
     RemovePunctuations, 
     RemoveNumbers, 
     TextToLowerCase,
     AnalyzeWord,
     StopWords,
-    FindUniques
+    FindUniques,
+    FullAuto
 };

@@ -20,8 +20,7 @@ function execPromise(command) {
 class Prep {
     constructor() {}
 
-    async RemovePunctuations(data) {
-        const text = data.text;
+    async RemovePunctuations(text) {
         try {
             const result = text.replace(helper.punctuations, "");
             return result;
@@ -30,18 +29,17 @@ class Prep {
         }
     }
 
-    async RemoveNumbers(data) {
-        const text = data.text;
+    async RemoveNumbers(text) {
         try {
             const result = text.replace(helper.number, "");
-            return result.trim();
+            const removeAllNumbers = result.replace(helper.numbers, "");
+            return removeAllNumbers.trim();
         } catch (error) {
             return false;
         }
     }
 
-    async LowerCase(data) {
-        const text = data.text;
+    async LowerCase(text) {
         try {
             const result = text.toLowerCase();
             return result;
@@ -69,7 +67,7 @@ class Prep {
                 results.push({ word, ...processedResult }); 
             }
         
-            return results; 
+            return results.map(r => r.lemmas.join(' ')).join(' ');
         } catch (error) {
             console.error('Error analyzing word:', error);
             return null; 
@@ -105,6 +103,18 @@ class Prep {
         }
     }
 
+    async FullAuto(text){
+        try{
+            const RemovePunctuationsResult = await this.RemovePunctuations(text);
+            const RemoveNumbersResult = await this.RemoveNumbers(RemovePunctuationsResult);
+            const LowerCaseResult = await this.LowerCase(RemoveNumbersResult);
+            const ZemberekResult = await this.AnalyzeWord(LowerCaseResult);
+            const FindUniquesResult = await this.FindUniques(ZemberekResult);
+            return FindUniquesResult;
+        } catch (error){
+            return false;
+        }
+    }
 }
 
 function processAnalysisResult(rawResult) {
