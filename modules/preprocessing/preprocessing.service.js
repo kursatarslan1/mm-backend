@@ -103,15 +103,19 @@ class Prep {
         }
     }
 
-    async FullAuto(text){
-        try{
-            const RemovePunctuationsResult = await this.RemovePunctuations(text);
-            const RemoveNumbersResult = await this.RemoveNumbers(RemovePunctuationsResult);
-            const LowerCaseResult = await this.LowerCase(RemoveNumbersResult);
-            const ZemberekResult = await this.AnalyzeWord(LowerCaseResult);
-            const FindUniquesResult = await this.FindUniques(ZemberekResult);
-            return FindUniquesResult;
-        } catch (error){
+    async FullAuto(text) {
+        try {
+            const results = {};
+            
+            results.removePunctuationResult = await this.RemovePunctuations(text);
+            results.removeNumberResult = await this.RemoveNumbers(results.removePunctuationResult);
+            results.lowerCaseResult = await this.LowerCase(results.removeNumberResult);
+            results.zemberekResult = await this.AnalyzeWord(results.lowerCaseResult);
+            results.findUniquesResult = await this.FindUniques(results.zemberekResult);
+            
+            return results; 
+        } catch (error) {
+            console.error("Error in FullAuto:", error);
             return false;
         }
     }
