@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 class StopWerseService{
     async CreateWord(data){
         try{
-            return await prisma.StopWerse.create({ data }); 
+            return await prisma.stopWords.create({ data }); 
         } catch (error){
             return false;
         }
@@ -12,7 +12,7 @@ class StopWerseService{
 
     async GetStopWerses(){
         try{
-            const stop_werses = await prisma.StopWerse.findMany({});
+            const stop_werses = await prisma.stopWords.findMany({});
             return stop_werses;
         } catch (error){
             return false;
@@ -21,14 +21,14 @@ class StopWerseService{
 
     async UpdateWordById(id, data){
         try{
-            return await prisma.StopWerse.update({ where: {word_id: id }, data });
+            return await prisma.stopWords.update({ where: {word_id: id }, data });
         } catch (error){
             return false;
         }
     }
 
     async DeleteWord(id){
-        return await prisma.StopWerse.delete({ where: { word_id: id } });
+        return await prisma.stopWords.delete({ where: { word_id: id } });
     }
 }
 

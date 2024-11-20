@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model StopWerse {
+model StopWords {
   word_id String @id @default(uuid())
   word    String
 }

@@ -50,29 +50,24 @@ class Prep {
 
     async AnalyzeWord(text) {
         try {
-            const words = text.split(/\s+/);
-            const results = []; 
-        
-            for (const word of words) {
-                const command = `java -Dfile.encoding=UTF-8 -cp "${zemberekFilePath}\\libs\\zemberek-full.jar;." TestZemberek "${word}"`;
-                console.log(`Running: ${command}`);
-                
-                
-                const rawResult = await execPromise(command);
-    
-               
-                const processedResult = processAnalysisResult(rawResult); 
-                console.log(`Processed Result for "${word}":`, processedResult);
-    
-                results.push({ word, ...processedResult }); 
-            }
-        
-            return results.map(r => r.lemmas.join(' ')).join(' ');
+            // Zemberek'e doğrudan metni gönder
+            const command = `java -Xms512m -Xmx2g -Dfile.encoding=UTF-8 -cp "${zemberekFilePath}\\libs\\zemberek-full.jar;." TestZemberek "${text}"`;
+            console.log(`Running: ${command}`);
+            
+            // Zemberek analizi gerçekleştirin
+            const rawResult = await execPromise(command);
+            
+            // Çıkan sonuçları işleyin
+            const processedResult = processAnalysisResult(rawResult);
+            
+            // Sonuçları döndürün
+            return processedResult.lemmas.join(' ');
         } catch (error) {
-            console.error('Error analyzing word:', error);
+            console.error('Error analyzing text:', error);
             return null; 
         }
     }
+    
 
     async StopWords(text) {
         try {
@@ -111,7 +106,8 @@ class Prep {
             results.removeNumberResult = await this.RemoveNumbers(results.removePunctuationResult);
             results.lowerCaseResult = await this.LowerCase(results.removeNumberResult);
             results.zemberekResult = await this.AnalyzeWord(results.lowerCaseResult);
-            results.findUniquesResult = await this.FindUniques(results.zemberekResult);
+            results.stopWordsResult = await this.StopWords(results.zemberekResult);
+            results.findUniquesResult = await this.FindUniques(results.stopWordsResult);
             
             return results; 
         } catch (error) {
